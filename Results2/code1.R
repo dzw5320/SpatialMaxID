@@ -2,7 +2,7 @@
 ######Magnolia Warbler###################
 
 
-##ggmap API key AIzaSyD2ZFRJP3aR1wBFyTocC_L6BRDRh5O77Ok
+
 library(auk)
 library(readr)
 library(dplyr)
@@ -48,7 +48,7 @@ plot(table(month(ebd$`OBSERVATION DATE`)), xlab="Month", ylab="Frequency")
 ebd <- ebd %>%
   arrange(`OBSERVATION DATE`)
 
-ggmap::register_google(key = "AIzaSyD2ZFRJP3aR1wBFyTocC_L6BRDRh5O77Ok")
+
 
 map<-get_map(location='united states', zoom=4, maptype = "terrain",
              source='google',color='color')
@@ -288,4 +288,26 @@ plot(early_arr[,1], type="l", ylim=c(12,211))
 
 #For the initial case impute NA values by mean
 
+for(c in c(1:ncol(early_arr))){
+  
+  if(length(which(is.na(early_arr[,c])))>0){
+    
+    early_arr[which(is.na(early_arr[,c])),c]<-mean(early_arr[,c], na.rm = TRUE)
+    
+  }
+  
+}
 
+
+p<-ggmap(map) + geom_point(
+  aes(x=LONGITUDE, y=LATITUDE, colour="red"),data=locs, alpha=.5, na.rm = T) 
+
+
+locs<-as.data.frame(s_obsloc)
+names(locs)<-c("LATITUDE", "LONGITUDE")
+
+
+#Save early_arr and s_obsloc
+
+
+save(early_arr, s_obsloc, file="C:\\Users\\dhanu\\OneDrive\\FirstArrival\\SpatialMaxID\\Results2\\magwarearlyarrival.Rdata")
